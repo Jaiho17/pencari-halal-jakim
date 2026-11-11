@@ -1,32 +1,72 @@
-
+[
   {
     "id": 1,
+    "rank": 1,
     "name": "Restoran Selera Kampung KK",
     "company": "Selera KK Sdn Bhd",
     "certNo": "JAKIM.700-2/3/1 012-04/2024",
     "expiry": "31/12/2026",
     "address": "No. 12, Jalan Gaya, 88000 Kota Kinabalu, Sabah",
     "lat": 5.9820,
-    "lng": 116.0750
+    "lng": 116.0750,
+    "openHour": 7,
+    "closeHour": 22,
+    "hoursText": "07:00 AM - 10:00 PM (Setiap Hari)"
   },
   {
     "id": 2,
+    "rank": 2,
     "name": "D'Anjung Seafood Halal",
     "company": "Anjung Rasa Enterprise",
     "certNo": "JAKIM.700-2/3/1 102-01/2024",
     "expiry": "28/02/2026",
     "address": "Anjung Senia, 88000 Kota Kinabalu, Sabah",
     "lat": 5.9750,
-    "lng": 116.0680
+    "lng": 116.0680,
+    "openHour": 11,
+    "closeHour": 23,
+    "hoursText": "11:00 AM - 11:00 PM (Isnin - Ahad)"
   },
   {
     "id": 3,
+    "rank": 3,
     "name": "Kedai Kopi & Roti Sabah Halal",
     "company": "Borneo Foodies Sdn Bhd",
     "certNo": "JAKIM.700-2/3/1 105-05/2025",
     "expiry": "15/10/2026",
     "address": "Inanam Plaza, 88450 Kota Kinabalu, Sabah",
     "lat": 5.9890,
-    "lng": 116.0820
+    "lng": 116.0820,
+    "openHour": 6,
+    "closeHour": 18,
+    "hoursText": "06:00 AM - 06:00 PM (Isnin - Sabtu)"
+  },
+  {
+    "id": 4,
+    "rank": 4,
+    "name": "Nasi Kukus D'Likas Halal",
+    "company": "Warisan Likas Enterprise",
+    "certNo": "JAKIM.700-2/3/1 204-08/2025",
+    "expiry": "20/12/2027",
+    "address": "Jalan Likas, 88400 Kota Kinabalu, Sabah",
+    "lat": 5.9950,
+    "lng": 116.1010,
+    "openHour": 10,
+    "closeHour": 21,
+    "hoursText": "10:00 AM - 09:00 PM (Setiap Hari)"
+  },
+  {
+    "id": 5,
+    "rank": 5,
+    "name": "Restoran Tanjung Aru Breeze",
+    "company": "Tanjung Bay Sdn Bhd",
+    "certNo": "JAKIM.700-2/3/1 301-11/2024",
+    "expiry": "30/06/2026",
+    "address": "Plaza Tanjung Aru, 88100 Kota Kinabalu, Sabah",
+    "lat": 5.9480,
+    "lng": 116.0450,
+    "openHour": 12,
+    "closeHour": 24,
+    "hoursText": "12:00 PM - 12:00 AM (Isnin - Ahad)"
   }
 ]
