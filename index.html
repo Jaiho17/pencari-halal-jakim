@@ -5,15 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carian Restoran Halal JAKIM (Kota Kinabalu)</title>
   
-  <!-- Leaflet CSS -->
+  <!-- Leaflet CSS CDN Rasmi -->
   <link rel="stylesheet" href="[suspicious link removed]" />
   
   <style>
-    body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; }
-    #app { display: flex; flex-direction: column; height: 100vh; }
-    header { background-color: #0f766e; color: white; padding: 15px; text-align: center; }
-    header h1 { margin: 0; font-size: 1.2rem; }
-    
+    body, html { 
+      margin: 0; 
+      padding: 0; 
+      height: 100%; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background-color: #f8fafc; 
+    }
+    #app { 
+      display: flex; 
+      flex-direction: column; 
+      height: 100vh; 
+    }
+    header { 
+      background-color: #0f766e; 
+      color: white; 
+      padding: 15px; 
+      text-align: center; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 { 
+      margin: 0; 
+      font-size: 1.2rem; 
+    }
     #controls { 
       padding: 15px; 
       background: white; 
@@ -23,7 +41,6 @@
       gap: 10px;
       align-items: center;
     }
-    
     .filter-group {
       display: flex;
       gap: 10px;
@@ -32,7 +49,6 @@
       width: 100%;
       max-width: 500px;
     }
-
     .input-box, .select-box {
       padding: 8px 12px;
       border: 1px solid #cbd5e1;
@@ -41,7 +57,6 @@
       flex: 1;
       min-width: 140px;
     }
-
     .btn-search { 
       background-color: #16a34a; 
       color: white; 
@@ -54,14 +69,40 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       width: 100%;
       max-width: 500px;
+      transition: background 0.2s;
     }
-    .btn-search:hover { background-color: #15803d; }
-    
-    #status { font-size: 0.85rem; color: #475569; text-align: center; }
-    #map { flex: 1; width: 100%; }
-    
-    .badge-halal { background-color: #16a34a; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-    .btn-nav { display: inline-block; margin-top: 8px; padding: 5px 10px; background-color: #0284c7; color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+    .btn-search:hover { 
+      background-color: #15803d; 
+    }
+    #status { 
+      font-size: 0.85rem; 
+      color: #475569; 
+      text-align: center; 
+    }
+    #map { 
+      flex: 1; 
+      width: 100%; 
+      min-height: 400px;
+    }
+    .badge-halal { 
+      background-color: #16a34a; 
+      color: white; 
+      padding: 2px 6px; 
+      border-radius: 4px; 
+      font-size: 0.75rem; 
+      font-weight: bold; 
+    }
+    .btn-nav { 
+      display: inline-block; 
+      margin-top: 8px; 
+      padding: 5px 10px; 
+      background-color: #0284c7; 
+      color: white; 
+      text-decoration: none; 
+      border-radius: 4px; 
+      font-size: 0.8rem; 
+      font-weight: bold; 
+    }
   </style>
 </head>
 <body>
@@ -91,12 +132,12 @@
     <div id="map"></div>
   </div>
 
-  <!-- Leaflet JS -->
+  <!-- Leaflet JS CDN Rasmi -->
   <script src="[suspicious link removed]"></script>
   <script>
     let map = null;
     let userMarker = null;
-    let userLat = 5.9804; // Pusat lalai: Kota Kinabalu
+    let userLat = 5.9804; // Koordinat Kota Kinabalu
     let userLng = 116.0735;
     let allRestaurants = [];
     let activeMarkers = [];
@@ -113,19 +154,22 @@
       return R * c;
     }
 
-    // Inisialisasi awal peta semasa laman dibuka
+    // Paparkan peta Kota Kinabalu secara automatik apabila laman web dibuka
     window.onload = async function() {
       const statusDiv = document.getElementById("status");
       
-      // Buka peta Kota Kinabalu
+      // Inisialisasi peta Leaflet
       map = L.map('map').setView([userLat, userLng], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
-      setTimeout(() => { map.invalidateSize(); }, 300);
+      // Selaraskan saiz peta
+      setTimeout(() => { 
+        if (map) map.invalidateSize(); 
+      }, 300);
 
-      // Muat data manual dari restaurants.json
+      // Muat turun data restoran dari fail restaurants.json
       try {
         const res = await fetch('restaurants.json');
         allRestaurants = await res.json();
@@ -139,7 +183,7 @@
     function cariRestoranBerhampiran() {
       const statusDiv = document.getElementById("status");
       if (!navigator.geolocation) {
-        statusDiv.innerText = "Pelayar web tidak menyokong GPS.";
+        statusDiv.innerText = "Pelayar web anda tidak menyokong fungsi GPS.";
         return;
       }
 
@@ -165,7 +209,7 @@
           applyFilters();
         },
         (err) => {
-          statusDiv.innerText = "⚠️ Akses lokasi ditolak. Peta kekal pada Kota Kinabalu.";
+          statusDiv.innerText = "⚠️ Akses lokasi ditolak. Peta kekal memaparkan Kota Kinabalu.";
         }
       );
     }
