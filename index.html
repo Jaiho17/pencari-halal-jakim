@@ -3,38 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Peta Restoran Halal JAKIM (Kota Kinabalu)</title>
+  <title>Peta Restoran Halal (Kota Kinabalu)</title>
   
   <!-- Leaflet CSS CDN -->
   <link rel="stylesheet" href="[suspicious link removed]" />
-  <link rel="stylesheet" href="style.css" />
+  <!-- Fail CSS Locator -->
+  <link rel="stylesheet" href="locator.css" />
 </head>
 <body>
 
   <div class="container">
     <header>
-      <h1>Peta Restoran Halal JAKIM (Kota Kinabalu)</h1>
+      <h1>Peta Restoran Halal (Kota Kinabalu)</h1>
       <p id="statusText">Memuatkan maklumat restoran halal berhampiran...</p>
     </header>
 
-    <!-- Top Bar: Prompt 1 & 6 Controls -->
+    <!-- Top Controls Bar -->
     <div class="top-bar">
       <div class="controls-left">
         <label class="toggle-switch">
           <input type="checkbox" id="openNowToggle" onchange="toggleOpenNow()">
-          <span>Buka Sekarang (Open Now)</span>
+          <span>Buka Sekarang</span>
         </label>
       </div>
 
       <button class="btn-slate" onclick="locateUserAndFindNearest()">
-        🎯 Berhampiran Saya (Near Me)
+        🎯 Berhampiran Saya
       </button>
     </div>
 
-    <!-- Main Layout: Prompt 1 Store List & Rounded Map Frame -->
+    <!-- Main Content: Store List & Map Frame -->
     <div class="main-layout">
       <div class="store-list-container" id="storeList">
-        <!-- Kad restoran dimasukkan secara automatik oleh JS -->
+        <!-- Kad kedai akan dimasukkan secara automatik oleh JS -->
       </div>
 
       <div class="map-frame">
@@ -45,6 +46,7 @@
 
   <!-- Leaflet JS CDN -->
   <script src="[suspicious link removed]"></script>
-  <script src="script.js"></script>
+  <!-- Fail JS Locator -->
+  <script src="locator.js"></script>
 </body>
 </html>
