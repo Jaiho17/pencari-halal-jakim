@@ -9,11 +9,29 @@
   <link rel="stylesheet" href="[suspicious link removed]" />
   
   <style>
-    body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; }
-    #app { display: flex; flex-direction: column; height: 100vh; }
-    header { background-color: #0f766e; color: white; padding: 15px; text-align: center; }
-    header h1 { margin: 0; font-size: 1.2rem; }
-    
+    body, html { 
+      margin: 0; 
+      padding: 0; 
+      height: 100%; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background-color: #f8fafc; 
+    }
+    #app { 
+      display: flex; 
+      flex-direction: column; 
+      height: 100vh; 
+    }
+    header { 
+      background-color: #0f766e; 
+      color: white; 
+      padding: 15px; 
+      text-align: center; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 { 
+      margin: 0; 
+      font-size: 1.2rem; 
+    }
     #controls { 
       padding: 15px; 
       background: white; 
@@ -23,7 +41,23 @@
       gap: 10px;
       align-items: center;
     }
-    
+    .btn-search { 
+      background-color: #16a34a; 
+      color: white; 
+      border: none; 
+      padding: 12px 20px; 
+      font-size: 0.95rem; 
+      font-weight: bold; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      transition: background 0.2s;
+    }
+    .btn-search:hover { 
+      background-color: #15803d; 
+    }
     .filter-group {
       display: flex;
       gap: 10px;
@@ -32,7 +66,6 @@
       width: 100%;
       max-width: 500px;
     }
-
     .input-box, .select-box {
       padding: 8px 12px;
       border: 1px solid #cbd5e1;
@@ -41,27 +74,35 @@
       flex: 1;
       min-width: 140px;
     }
-
-    .btn-search { 
+    #status { 
+      font-size: 0.85rem; 
+      color: #475569; 
+      text-align: center; 
+    }
+    #map { 
+      flex: 1; 
+      width: 100%; 
+      display: none; 
+    }
+    .badge-halal { 
       background-color: #16a34a; 
       color: white; 
-      border: none; 
-      padding: 10px 20px; 
-      font-size: 0.95rem; 
+      padding: 2px 6px; 
+      border-radius: 4px; 
+      font-size: 0.75rem; 
       font-weight: bold; 
-      border-radius: 6px; 
-      cursor: pointer; 
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 500px;
     }
-    .btn-search:hover { background-color: #15803d; }
-    
-    #status { font-size: 0.85rem; color: #475569; text-align: center; }
-    #map { flex: 1; width: 100%; display: none; }
-    
-    .badge-halal { background-color: #16a34a; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-    .btn-nav { display: inline-block; margin-top: 8px; padding: 5px 10px; background-color: #0284c7; color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+    .btn-nav { 
+      display: inline-block; 
+      margin-top: 8px; 
+      padding: 5px 10px; 
+      background-color: #0284c7; 
+      color: white; 
+      text-decoration: none; 
+      border-radius: 4px; 
+      font-size: 0.8rem; 
+      font-weight: bold; 
+    }
   </style>
 </head>
 <body>
@@ -81,7 +122,7 @@
         <select id="radiusSelect" class="select-box" onchange="applyFilters()" disabled>
           <option value="5">Radius 5 KM</option>
           <option value="10">Radius 10 KM</option>
-          <option value="25">Radius 25 KM</option>
+          <option value="25" selected>Radius 25 KM</option>
           <option value="999">Semua Jarak</option>
         </select>
       </div>
@@ -102,7 +143,7 @@
     let allRestaurants = [];
     let activeMarkers = [];
 
-    // Pengiraan jarak Haversine (KM) [1, 2]
+    // Pengiraan jarak Haversine (KM)
     function calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 6371; 
       const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -141,7 +182,12 @@
             map.setView([userLat, userLng], 13);
           }
 
-          // Letak marker lokasi pengguna (titik biru)
+          // Kemas kini saiz paparan peta secara automatik
+          setTimeout(() => { 
+            if (map) map.invalidateSize(); 
+          }, 200);
+
+          // Marker lokasi pengguna (titik biru)
           if (userMarker) map.removeLayer(userMarker);
           userMarker = L.circleMarker([userLat, userLng], {
             radius: 9,
@@ -171,7 +217,7 @@
       );
     }
 
-    // Fungsi Penapis Carian Nama & Julat Radius [1, 2]
+    // Fungsi Penapis Carian Nama & Julat Radius
     function applyFilters() {
       if (!userLat || !userLng) return;
 
@@ -179,7 +225,7 @@
       const searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
       const maxRadius = parseFloat(document.getElementById("radiusSelect").value);
 
-      // Padamkan semua penanda sedia ada pada peta
+      // Padamkan penanda sedia ada pada peta
       activeMarkers.forEach(m => map.removeLayer(m));
       activeMarkers = [];
 
