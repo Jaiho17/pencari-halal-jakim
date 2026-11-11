@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carian Restoran Halal JAKIM (Kota Kinabalu)</title>
   
-  <!-- Leaflet CSS CDN Rasmi -->
+  <!-- Leaflet CSS CDN -->
   <link rel="stylesheet" href="[suspicious link removed]" />
   
   <style>
@@ -82,6 +82,7 @@
     #map { 
       flex: 1; 
       width: 100%; 
+      height: 500px;
       min-height: 400px;
     }
     .badge-halal { 
@@ -132,17 +133,16 @@
     <div id="map"></div>
   </div>
 
-  <!-- Leaflet JS CDN Rasmi -->
+  <!-- Leaflet JS CDN -->
   <script src="[suspicious link removed]"></script>
   <script>
     let map = null;
     let userMarker = null;
-    let userLat = 5.9804; // Koordinat Kota Kinabalu
+    let userLat = 5.9804; // Pusat Kota Kinabalu
     let userLng = 116.0735;
     let allRestaurants = [];
     let activeMarkers = [];
 
-    // Pengiraan jarak Haversine (KM)
     function calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 6371; 
       const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -154,22 +154,23 @@
       return R * c;
     }
 
-    // Paparkan peta Kota Kinabalu secara automatik apabila laman web dibuka
     window.onload = async function() {
       const statusDiv = document.getElementById("status");
       
-      // Inisialisasi peta Leaflet
-      map = L.map('map').setView([userLat, userLng], 13);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
+      try {
+        map = L.map('map').setView([userLat, userLng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
 
-      // Selaraskan saiz peta
-      setTimeout(() => { 
-        if (map) map.invalidateSize(); 
-      }, 300);
+        setTimeout(() => { 
+          if (map) map.invalidateSize(); 
+        }, 300);
+      } catch (err) {
+        statusDiv.innerText = "❌ Ralat memuatkan peta Leaflet. Sila semak pautan CDN.";
+        return;
+      }
 
-      // Muat turun data restoran dari fail restaurants.json
       try {
         const res = await fetch('restaurants.json');
         allRestaurants = await res.json();
