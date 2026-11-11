@@ -3,35 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carian Restoran Halal JAKIM</title>
+  <title>Carian Restoran Halal JAKIM (Kota Kinabalu)</title>
   
-  <!-- Leaflet CSS (Peta OpenStreetMap) -->
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="[suspicious link removed]" />
   
   <style>
-    body, html { 
-      margin: 0; 
-      padding: 0; 
-      height: 100%; 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-      background-color: #f8fafc; 
-    }
-    #app { 
-      display: flex; 
-      flex-direction: column; 
-      height: 100vh; 
-    }
-    header { 
-      background-color: #0f766e; 
-      color: white; 
-      padding: 15px; 
-      text-align: center; 
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    header h1 { 
-      margin: 0; 
-      font-size: 1.2rem; 
-    }
+    body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; }
+    #app { display: flex; flex-direction: column; height: 100vh; }
+    header { background-color: #0f766e; color: white; padding: 15px; text-align: center; }
+    header h1 { margin: 0; font-size: 1.2rem; }
+    
     #controls { 
       padding: 15px; 
       background: white; 
@@ -41,6 +23,25 @@
       gap: 10px;
       align-items: center;
     }
+    
+    .filter-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .input-box, .select-box {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      flex: 1;
+      min-width: 140px;
+    }
+
     .btn-search { 
       background-color: #16a34a; 
       color: white; 
@@ -53,81 +54,38 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       width: 100%;
       max-width: 500px;
-      transition: background 0.2s;
     }
-    .btn-search:hover { 
-      background-color: #15803d; 
-    }
-    .filter-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-      max-width: 500px;
-    }
-    .input-box, .select-box {
-      padding: 8px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      flex: 1;
-      min-width: 140px;
-    }
-    #status { 
-      font-size: 0.85rem; 
-      color: #475569; 
-      text-align: center; 
-    }
-    #map { 
-      flex: 1; 
-      width: 100%; 
-      display: none; 
-    }
-    .badge-halal { 
-      background-color: #16a34a; 
-      color: white; 
-      padding: 2px 6px; 
-      border-radius: 4px; 
-      font-size: 0.75rem; 
-      font-weight: bold; 
-    }
-    .btn-nav { 
-      display: inline-block; 
-      margin-top: 8px; 
-      padding: 5px 10px; 
-      background-color: #0284c7; 
-      color: white; 
-      text-decoration: none; 
-      border-radius: 4px; 
-      font-size: 0.8rem; 
-      font-weight: bold; 
-    }
+    .btn-search:hover { background-color: #15803d; }
+    
+    #status { font-size: 0.85rem; color: #475569; text-align: center; }
+    #map { flex: 1; width: 100%; }
+    
+    .badge-halal { background-color: #16a34a; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .btn-nav { display: inline-block; margin-top: 8px; padding: 5px 10px; background-color: #0284c7; color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
   </style>
 </head>
 <body>
 
   <div id="app">
     <header>
-      <h1>Peta Pencari Restoran Halal JAKIM (Sabah)</h1>
+      <h1>Peta Restoran Halal JAKIM (Kota Kinabalu)</h1>
     </header>
 
     <div id="controls">
-      <button class="btn-search" onclick="cariRestoranBerhampiran()">🎯 Cari Restoran Halal Berhampiran Saya</button>
+      <button class="btn-search" onclick="cariRestoranBerhampiran()">🎯 Kesan Lokasi Saya (GPS)</button>
 
-      <!-- Ruangan Tapisan Nama & Radius -->
       <div class="filter-group">
-        <input type="text" id="searchInput" class="input-box" placeholder="🔍 Taip nama restoran..." oninput="applyFilters()" disabled />
+        <input type="text" id="searchInput" class="input-box" placeholder="🔍 Taip nama restoran..." oninput="applyFilters()" />
         
-        <select id="radiusSelect" class="select-box" onchange="applyFilters()" disabled>
+        <select id="radiusSelect" class="select-box" onchange="applyFilters()">
           <option value="5">Radius 5 KM</option>
           <option value="10">Radius 10 KM</option>
-          <option value="25" selected>Radius 25 KM</option>
-          <option value="999">Semua Jarak</option>
+          <option value="25">Radius 25 KM</option>
+          <option value="999" selected>Semua Jarak (Tunjuk Semua)</option>
         </select>
       </div>
 
-      <div id="status">Tekan butang di atas untuk memulakan perkongsian lokasi GPS.</div>
+      <div id="status">Memuatkan peta Kota Kinabalu...</div>
     </div>
 
     <div id="map"></div>
@@ -138,8 +96,8 @@
   <script>
     let map = null;
     let userMarker = null;
-    let userLat = null;
-    let userLng = null;
+    let userLat = 5.9804; // Pusat lalai: Kota Kinabalu
+    let userLng = 116.0735;
     let allRestaurants = [];
     let activeMarkers = [];
 
@@ -155,39 +113,45 @@
       return R * c;
     }
 
-    function cariRestoranBerhampiran() {
+    // Inisialisasi awal peta semasa laman dibuka
+    window.onload = async function() {
       const statusDiv = document.getElementById("status");
       
+      // Buka peta Kota Kinabalu
+      map = L.map('map').setView([userLat, userLng], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      setTimeout(() => { map.invalidateSize(); }, 300);
+
+      // Muat data manual dari restaurants.json
+      try {
+        const res = await fetch('restaurants.json');
+        allRestaurants = await res.json();
+        applyFilters();
+        statusDiv.innerText = "✅ Peta sedia! Menunjukkan kedai halal di Kota Kinabalu.";
+      } catch (e) {
+        statusDiv.innerText = "❌ Ralat memuatkan data restaurants.json.";
+      }
+    };
+
+    function cariRestoranBerhampiran() {
+      const statusDiv = document.getElementById("status");
       if (!navigator.geolocation) {
-        statusDiv.innerText = "Pelayar web anda tidak menyokong fungsi perkongsian lokasi.";
+        statusDiv.innerText = "Pelayar web tidak menyokong GPS.";
         return;
       }
 
       statusDiv.innerText = "⏳ Meminta kebenaran lokasi GPS...";
 
       navigator.geolocation.getCurrentPosition(
-        async (position) => {
+        (position) => {
           userLat = position.coords.latitude;
           userLng = position.coords.longitude;
 
-          statusDiv.innerText = "✅ Lokasi ditemui! Memuatkan peta...";
-          document.getElementById("map").style.display = "block";
+          map.setView([userLat, userLng], 13);
 
-          if (!map) {
-            map = L.map('map').setView([userLat, userLng], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
-          } else {
-            map.setView([userLat, userLng], 13);
-          }
-
-          // Kemas kini saiz paparan peta secara automatik
-          setTimeout(() => { 
-            if (map) map.invalidateSize(); 
-          }, 200);
-
-          // Marker lokasi pengguna (titik biru)
           if (userMarker) map.removeLayer(userMarker);
           userMarker = L.circleMarker([userLat, userLng], {
             radius: 9,
@@ -196,36 +160,22 @@
             weight: 3,
             fillOpacity: 0.9
           }).addTo(map);
-          userMarker.bindPopup("<b>📍 Lokasi Anda di Sini</b>").openPopup();
+          userMarker.bindPopup("<b>📍 Lokasi GPS Anda</b>").openPopup();
 
-          // Aktifkan petak carian & julat radius
-          document.getElementById("searchInput").disabled = false;
-          document.getElementById("radiusSelect").disabled = false;
-
-          // Muat turun data kedai dari restaurants.json
-          try {
-            const res = await fetch('restaurants.json');
-            allRestaurants = await res.json();
-            applyFilters();
-          } catch (e) {
-            statusDiv.innerText = "Sila pastikan fail restaurants.json telah dicipta di GitHub.";
-          }
+          applyFilters();
         },
         (err) => {
-          statusDiv.innerText = "❌ Akses lokasi ditolak. Sila benarkan kebenaran GPS pada peranti anda.";
+          statusDiv.innerText = "⚠️ Akses lokasi ditolak. Peta kekal pada Kota Kinabalu.";
         }
       );
     }
 
-    // Fungsi Penapis Carian Nama & Julat Radius
     function applyFilters() {
-      if (!userLat || !userLng) return;
-
+      if (!map) return;
       const statusDiv = document.getElementById("status");
       const searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
       const maxRadius = parseFloat(document.getElementById("radiusSelect").value);
 
-      // Padamkan penanda sedia ada pada peta
       activeMarkers.forEach(m => map.removeLayer(m));
       activeMarkers = [];
 
@@ -246,15 +196,15 @@
             <div style="margin: 4px 0;"><span class="badge-halal">Halal JAKIM</span></div>
             <small><strong>No Sijil:</strong> ${shop.certNo || '-'}</small><br>
             <small><strong>Sah Hingga:</strong> ${shop.expiry || '-'}</small><br>
-            <small><strong>Jarak:</strong> ${dist.toFixed(1)} km</small><br>
-            <a class="btn-nav" href="[suspicious link removed]{shop.lat},${shop.lng}" target="_blank">🧭 Pandu Arah (Google Maps)</a>
+            <small><strong>Alamat:</strong> ${shop.address || '-'}</small><br>
+            <a class="btn-nav" href="[suspicious link removed]{shop.lat},${shop.lng}" target="_blank">🧭 Pandu Arah</a>
           `;
           marker.bindPopup(popupHTML);
           activeMarkers.push(marker);
         }
       });
 
-      statusDiv.innerText = `✅ Ditemui ${count} restoran halal mengikut kriteria penapis anda.`;
+      statusDiv.innerText = `✅ Ditemui ${count} restoran halal dipaparkan pada peta.`;
     }
   </script>
 </body>
