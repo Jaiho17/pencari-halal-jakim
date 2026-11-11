@@ -1,0 +1,107 @@
+body, html { 
+  margin: 0; 
+  padding: 0; 
+  height: 100%; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  background-color: #f8fafc; 
+}
+
+#app { 
+  display: flex; 
+  flex-direction: column; 
+  height: 100vh; 
+}
+
+header { 
+  background-color: #0f766e; 
+  color: white; 
+  padding: 15px; 
+  text-align: center; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 { 
+  margin: 0; 
+  font-size: 1.2rem; 
+}
+
+#controls { 
+  padding: 15px; 
+  background: white; 
+  border-bottom: 1px solid #e2e8f0; 
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.input-box, .select-box {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.btn-search { 
+  background-color: #16a34a; 
+  color: white; 
+  border: none; 
+  padding: 12px 20px; 
+  font-size: 0.95rem; 
+  font-weight: bold; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 500px;
+  transition: background 0.2s;
+}
+
+.btn-search:hover { 
+  background-color: #15803d; 
+}
+
+#status { 
+  font-size: 0.85rem; 
+  color: #475569; 
+  text-align: center; 
+}
+
+#map { 
+  flex: 1; 
+  width: 100%; 
+  height: 500px;
+  min-height: 400px;
+}
+
+.badge-halal { 
+  background-color: #16a34a; 
+  color: white; 
+  padding: 2px 6px; 
+  border-radius: 4px; 
+  font-size: 0.75rem; 
+  font-weight: bold; 
+}
+
+.btn-nav { 
+  display: inline-block; 
+  margin-top: 8px; 
+  padding: 5px 10px; 
+  background-color: #0284c7; 
+  color: white; 
+  text-decoration: none; 
+  border-radius: 4px; 
+  font-size: 0.8rem; 
+  font-weight: bold; 
+}
