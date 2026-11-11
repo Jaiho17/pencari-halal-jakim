@@ -3,43 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carian Restoran Halal JAKIM (Kota Kinabalu)</title>
+  <title>Peta Restoran Halal JAKIM (Kota Kinabalu)</title>
   
-  <!-- Pautan Leaflet CSS Rasmi -->
+  <!-- Leaflet CSS CDN -->
   <link rel="stylesheet" href="[suspicious link removed]" />
-  <!-- Fail CSS Tempatan Anda -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div id="app">
+  <div class="container">
     <header>
       <h1>Peta Restoran Halal JAKIM (Kota Kinabalu)</h1>
+      <p id="statusText">Memuatkan maklumat restoran halal berhampiran...</p>
     </header>
 
-    <div id="controls">
-      <button class="btn-search" onclick="cariRestoranBerhampiran()">🎯 Kesan Lokasi Saya (GPS)</button>
-
-      <div class="filter-group">
-        <input type="text" id="searchInput" class="input-box" placeholder="🔍 Taip nama restoran..." oninput="applyFilters()" />
-        
-        <select id="radiusSelect" class="select-box" onchange="applyFilters()">
-          <option value="5">Radius 5 KM</option>
-          <option value="10">Radius 10 KM</option>
-          <option value="25">Radius 25 KM</option>
-          <option value="999" selected>Semua Jarak (Tunjuk Semua)</option>
-        </select>
+    <!-- Top Bar: Prompt 1 & 6 Controls -->
+    <div class="top-bar">
+      <div class="controls-left">
+        <label class="toggle-switch">
+          <input type="checkbox" id="openNowToggle" onchange="toggleOpenNow()">
+          <span>Buka Sekarang (Open Now)</span>
+        </label>
       </div>
 
-      <div id="status">Memuatkan peta Kota Kinabalu...</div>
+      <button class="btn-slate" onclick="locateUserAndFindNearest()">
+        🎯 Berhampiran Saya (Near Me)
+      </button>
     </div>
 
-    <div id="map"></div>
+    <!-- Main Layout: Prompt 1 Store List & Rounded Map Frame -->
+    <div class="main-layout">
+      <div class="store-list-container" id="storeList">
+        <!-- Kad restoran dimasukkan secara automatik oleh JS -->
+      </div>
+
+      <div class="map-frame">
+        <div id="map"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- Pautan Leaflet JS Rasmi -->
+  <!-- Leaflet JS CDN -->
   <script src="[suspicious link removed]"></script>
-  <!-- Fail JavaScript Tempatan Anda -->
   <script src="script.js"></script>
 </body>
 </html>
