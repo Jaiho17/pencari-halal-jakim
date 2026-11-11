@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "Restoran Selera Kampung KK",
+    "company": "Selera KK Sdn Bhd",
+    "certNo": "JAKIM.700-2/3/1 012-04/2024",
+    "expiry": "31/12/2026",
+    "address": "No. 12, Jalan Gaya, 88000 Kota Kinabalu, Sabah",
+    "lat": 5.982,
+    "lng": 116.075
+  },
+  {
+    "id": 2,
+    "name": "D'Anjung Seafood Halal",
+    "company": "Anjung Rasa Enterprise",
+    "certNo": "JAKIM.700-2/3/1 102-01/2024",
+    "expiry": "28/02/2026",
+    "address": "Anjung Senia, 88000 Kota Kinabalu, Sabah",
+    "lat": 5.975,
+    "lng": 116.068
+  },
+  {
+    "id": 3,
+    "name": "Kedai Kopi & Roti Sabah Halal",
+    "company": "Borneo Foodies Sdn Bhd",
+    "certNo": "JAKIM.700-2/3/1 105-05/2025",
+    "expiry": "15/10/2026",
+    "address": "Inanam Plaza, 88450 Kota Kinabalu, Sabah",
+    "lat": 5.989,
+    "lng": 116.082
+  }
+]
