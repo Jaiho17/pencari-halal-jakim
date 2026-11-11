@@ -1,0 +1,38 @@
+name: Automasi Scraper Halal Sabah
+
+on:
+  schedule:
+    # Berjalan automatik setiap 1 haribulan pada jam 12:00 tengah malam
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # Membolehkan pemicu manual via butang 'Run workflow'
+
+jobs:
+  scrape-job:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Muat turun kod repositori
+        uses: actions/checkout@v4
+
+      - name: Sediakan Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Pasang Pustaka Playwright
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: Jalankan Skrip Scraper Sabah
+        run: python scraper_sabah.py
+
+      - name: Simpan Fail Data Terkemas Kini
+        run: |
+          git config --global user.name "Sabah Halal Bot"
+          git config --global user.email "actions@github.com"
+          git add restaurants.json
+          git commit -m "Kemas kini automatik senarai kedai halal Sabah" || echo "Tiada perubahan data baharu"
+          git push
