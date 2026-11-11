@@ -78,7 +78,6 @@ let userLng = 116.0735;
 let userMarker = null;
 let currentRouteLine = null;
 
-// Formula Pengiraan Jarak Haversine (KM)
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -89,14 +88,12 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return R * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)) * 2;
 }
 
-// Semak status buka kedai mengikut waktu semasa
 function isStoreOpen(shop) {
   const currentHour = new Date().getHours();
   return currentHour >= shop.openHour && currentHour < shop.closeHour;
 }
 
 window.onload = async function() {
-  // Inisialisasi Peta Leaflet
   map = L.map('map').setView([userLat, userLng], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
@@ -104,13 +101,11 @@ window.onload = async function() {
 
   setTimeout(() => { if (map) map.invalidateSize(); }, 300);
 
-  // Modul 4: Drag to Reorder (Susun mengikut jarak pusat peta semasa diseret)
   map.on('dragend', () => {
     const center = map.getCenter();
     reorderStoresByCenter(center.lat, center.lng);
   });
 
-  // Muat pangkalan data external jika wujud
   try {
     const res = await fetch('restaurants.json');
     if (res.ok) {
@@ -120,33 +115,29 @@ window.onload = async function() {
       }
     }
   } catch (e) {
-    console.log("Menggunakan data restoran sedia ada.");
+    console.log("Menggunakan data sedia ada.");
   }
 
   reorderStoresByCenter(userLat, userLng);
 };
 
-// Modul 4 & 2: Kira jarak, susun senarai & penanda peta
 function reorderStoresByCenter(centerLat, centerLng) {
   restaurants.forEach(shop => {
     shop.distance = calculateDistance(centerLat, centerLng, shop.lat, shop.lng);
     shop.isOpen = isStoreOpen(shop);
   });
 
-  // Susun mengikut jarak terdekat
   restaurants.sort((a, b) => a.distance - b.distance);
   restaurants.forEach((shop, index) => shop.rank = index + 1);
 
   renderListAndPins();
 }
 
-// Modul 1 & 2: Papar Senarai Kedai & Penanda Peta (Coral / Kelabu)
 function renderListAndPins() {
   const listContainer = document.getElementById('storeList');
   const showOpenOnly = document.getElementById('openNowToggle').checked;
   listContainer.innerHTML = '';
 
-  // Bersihkan penanda sedia ada
   Object.values(markersMap).forEach(m => map.removeLayer(m));
   markersMap = {};
 
@@ -156,7 +147,6 @@ function renderListAndPins() {
     if (showOpenOnly && !shop.isOpen) return;
     visibleCount++;
 
-    // 1. Bina Kad Senarai (List Row)
     const card = document.createElement('div');
     card.className = 'store-card';
     card.id = `card-${shop.id}`;
@@ -172,7 +162,6 @@ function renderListAndPins() {
         <div>📍 ${shop.address}</div>
         <div>📏 ${shop.distance.toFixed(2)} km dari pusat peta</div>
       </div>
-      <!-- Modul 5: Details Unfold -->
       <div class="details-unfold">
         <div><strong>Syarikat:</strong> ${shop.company}</div>
         <div><strong>No. Sijil JAKIM:</strong> ${shop.certNo}</div>
@@ -184,7 +173,6 @@ function renderListAndPins() {
       </div>
     `;
 
-    // Modul 3: Hover/Click - Highlight & Fly map to Pin
     card.addEventListener('mouseenter', () => highlightAndFlyToPin(shop.id));
     card.addEventListener('click', () => {
       card.classList.toggle('expanded');
@@ -193,11 +181,10 @@ function renderListAndPins() {
 
     listContainer.appendChild(card);
 
-    // 2. Bina Penanda Khas pada Peta
     const pinClass = shop.isOpen ? 'pin-open' : 'pin-closed';
     const customIcon = L.divIcon({
       className: '',
-      html: `<div class="custom-pin ${pinClass}" id="pin-elem-${shop.id}"><span>${shop.rank}</span></div>`,
+      html: `<div class="custom-pin ${pinClass}"><span>${shop.rank}</span></div>`,
       iconSize: [30, 30],
       iconAnchor: [15, 30]
     });
@@ -216,7 +203,6 @@ function renderListAndPins() {
   document.getElementById('statusText').innerText = `Menampilkan ${visibleCount} restoran halal di Kota Kinabalu.`;
 }
 
-// Modul 3: Gerakkan Peta & Animasi Pin
 function highlightAndFlyToPin(id) {
   document.querySelectorAll('.store-card').forEach(c => c.classList.remove('active'));
   const card = document.getElementById(`card-${id}`);
@@ -229,7 +215,6 @@ function highlightAndFlyToPin(id) {
   }
 }
 
-// Modul 5: Lukis Laluan Putus-putus (Dotted Route)
 function drawRouteToStore(id, event) {
   if (event) event.stopPropagation();
   const shop = restaurants.find(s => s.id === id);
@@ -237,7 +222,6 @@ function drawRouteToStore(id, event) {
 
   if (currentRouteLine) map.removeLayer(currentRouteLine);
 
-  // Garis putus-putus dari lokasi GPS/pusat peta ke restoran
   currentRouteLine = L.polyline([
     [userLat, userLng],
     [shop.lat, shop.lng]
@@ -248,10 +232,9 @@ function drawRouteToStore(id, event) {
     opacity: 0.9
   }).addTo(map);
 
-  map.fitBounds(currentRouteLine.getBounds(), { padding: [50, 50] });
+  map.fitBounds(currentRouteLine.getBounds(), { padding: [40, 40] });
 }
 
-// Modul 6: Butang "Berhampiran Saya" (Near Me)
 function locateUserAndFindNearest() {
   if (!navigator.geolocation) {
     alert("Pelayar anda tidak menyokong perkongsian lokasi GPS.");
