@@ -9,15 +9,57 @@
   <link rel="stylesheet" href="[suspicious link removed]" />
   
   <style>
-    body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background-color: #f8fafc; }
+    body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; }
     #app { display: flex; flex-direction: column; height: 100vh; }
     header { background-color: #0f766e; color: white; padding: 15px; text-align: center; }
     header h1 { margin: 0; font-size: 1.2rem; }
-    #controls { padding: 15px; text-align: center; background: white; border-bottom: 1px solid #e2e8f0; }
-    .btn-search { background-color: #16a34a; color: white; border: none; padding: 12px 20px; font-size: 1rem; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    
+    #controls { 
+      padding: 15px; 
+      background: white; 
+      border-bottom: 1px solid #e2e8f0; 
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .filter-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .input-box, .select-box {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .btn-search { 
+      background-color: #16a34a; 
+      color: white; 
+      border: none; 
+      padding: 10px 20px; 
+      font-size: 0.95rem; 
+      font-weight: bold; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
     .btn-search:hover { background-color: #15803d; }
-    #status { margin-top: 10px; font-size: 0.9rem; color: #475569; }
+    
+    #status { font-size: 0.85rem; color: #475569; text-align: center; }
     #map { flex: 1; width: 100%; display: none; }
+    
     .badge-halal { background-color: #16a34a; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
     .btn-nav { display: inline-block; margin-top: 8px; padding: 5px 10px; background-color: #0284c7; color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
   </style>
@@ -26,11 +68,24 @@
 
   <div id="app">
     <header>
-      <h1>Peta Pencari Restoran Halal JAKIM</h1>
+      <h1>Peta Pencari Restoran Halal JAKIM (Sabah)</h1>
     </header>
 
     <div id="controls">
       <button class="btn-search" onclick="cariRestoranBerhampiran()">🎯 Cari Restoran Halal Berhampiran Saya</button>
+
+      <!-- Ruangan Tapisan Nama & Radius -->
+      <div class="filter-group">
+        <input type="text" id="searchInput" class="input-box" placeholder="🔍 Taip nama restoran..." oninput="applyFilters()" disabled />
+        
+        <select id="radiusSelect" class="select-box" onchange="applyFilters()" disabled>
+          <option value="5">Radius 5 KM</option>
+          <option value="10">Radius 10 KM</option>
+          <option value="25">Radius 25 KM</option>
+          <option value="999">Semua Jarak</option>
+        </select>
+      </div>
+
       <div id="status">Tekan butang di atas untuk memulakan perkongsian lokasi GPS.</div>
     </div>
 
@@ -42,8 +97,12 @@
   <script>
     let map = null;
     let userMarker = null;
+    let userLat = null;
+    let userLng = null;
+    let allRestaurants = [];
+    let activeMarkers = [];
 
-    // Pengiraan jarak Haversine (KM)
+    // Pengiraan jarak Haversine (KM) [1, 2]
     function calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 6371; 
       const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -67,8 +126,8 @@
 
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const userLat = position.coords.latitude;
-          const userLng = position.coords.longitude;
+          userLat = position.coords.latitude;
+          userLng = position.coords.longitude;
 
           statusDiv.innerText = "✅ Lokasi ditemui! Memuatkan peta...";
           document.getElementById("map").style.display = "block";
@@ -82,7 +141,7 @@
             map.setView([userLat, userLng], 13);
           }
 
-          // Letak marker lokasi pengguna
+          // Letak marker lokasi pengguna (titik biru)
           if (userMarker) map.removeLayer(userMarker);
           userMarker = L.circleMarker([userLat, userLng], {
             radius: 9,
@@ -93,31 +152,15 @@
           }).addTo(map);
           userMarker.bindPopup("<b>📍 Lokasi Anda di Sini</b>").openPopup();
 
+          // Aktifkan petak carian & julat radius
+          document.getElementById("searchInput").disabled = false;
+          document.getElementById("radiusSelect").disabled = false;
+
           // Muat turun data kedai dari restaurants.json
           try {
             const res = await fetch('restaurants.json');
-            const data = await res.json();
-
-            let totalFound = 0;
-            data.forEach(shop => {
-              const dist = calculateDistance(userLat, userLng, shop.lat, shop.lng);
-              if (dist <= 25) { // Paparkan kedai dalam radius 25 KM
-                totalFound++;
-                const marker = L.marker([shop.lat, shop.lng]).addTo(map);
-                const popupHTML = `
-                  <strong style="font-size: 1rem;">${shop.name}</strong><br>
-                  <small style="color:#666;">${shop.company || ''}</small><br>
-                  <div style="margin: 4px 0;"><span class="badge-halal">Halal JAKIM</span></div>
-                  <small><strong>No Sijil:</strong> ${shop.certNo || '-'}</small><br>
-                  <small><strong>Sah Hingga:</strong> ${shop.expiry || '-'}</small><br>
-                  <small><strong>Jarak:</strong> ${dist.toFixed(1)} km</small><br>
-                  <a class="btn-nav" href="[suspicious link removed]{shop.lat},${shop.lng}" target="_blank">🧭 Pandu Arah</a>
-                `;
-                marker.bindPopup(popupHTML);
-              }
-            });
-
-            statusDiv.innerText = `✅ Ditemui ${totalFound} restoran halal berhampiran lokasi anda.`;
+            allRestaurants = await res.json();
+            applyFilters();
           } catch (e) {
             statusDiv.innerText = "Sila pastikan fail restaurants.json telah dicipta di GitHub.";
           }
@@ -126,6 +169,46 @@
           statusDiv.innerText = "❌ Akses lokasi ditolak. Sila benarkan kebenaran GPS pada peranti anda.";
         }
       );
+    }
+
+    // Fungsi Penapis Carian Nama & Julat Radius [1, 2]
+    function applyFilters() {
+      if (!userLat || !userLng) return;
+
+      const statusDiv = document.getElementById("status");
+      const searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
+      const maxRadius = parseFloat(document.getElementById("radiusSelect").value);
+
+      // Padamkan semua penanda sedia ada pada peta
+      activeMarkers.forEach(m => map.removeLayer(m));
+      activeMarkers = [];
+
+      let count = 0;
+
+      allRestaurants.forEach(shop => {
+        const dist = calculateDistance(userLat, userLng, shop.lat, shop.lng);
+        const nameMatches = shop.name.toLowerCase().includes(searchQuery);
+        const withinRadius = dist <= maxRadius;
+
+        if (nameMatches && withinRadius) {
+          count++;
+          const marker = L.marker([shop.lat, shop.lng]).addTo(map);
+          
+          const popupHTML = `
+            <strong style="font-size: 1rem;">${shop.name}</strong><br>
+            <small style="color:#666;">${shop.company || ''}</small><br>
+            <div style="margin: 4px 0;"><span class="badge-halal">Halal JAKIM</span></div>
+            <small><strong>No Sijil:</strong> ${shop.certNo || '-'}</small><br>
+            <small><strong>Sah Hingga:</strong> ${shop.expiry || '-'}</small><br>
+            <small><strong>Jarak:</strong> ${dist.toFixed(1)} km</small><br>
+            <a class="btn-nav" href="[suspicious link removed]{shop.lat},${shop.lng}" target="_blank">🧭 Pandu Arah (Google Maps)</a>
+          `;
+          marker.bindPopup(popupHTML);
+          activeMarkers.push(marker);
+        }
+      });
+
+      statusDiv.innerText = `✅ Ditemui ${count} restoran halal mengikut kriteria penapis anda.`;
     }
   </script>
 </body>
